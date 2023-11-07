@@ -1,0 +1,42 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Video {
+  id:Int!
+  name: String!
+  url: String!
+  author: String!
+}
+
+
+type Query {
+  videos: [Video!]!   # return array of video i.e all video
+  videoid(ID:Int!): Video  # return only video by id
+  videoname(name: String): [Video!]! # return video by name and. [] is for there can be same name video
+}
+
+input NewVideo {
+  id: Int!
+  name: String!
+  url: String!
+  author :String!
+}
+input UpdateVideo {
+  id: Int!
+  name: String!
+  url: String!
+  author: String
+}
+input DeleteVideo {
+  id: Int!
+}
+scalar Upload
+
+type Mutation {
+  createVideo(input: NewVideo!): Video!   # In last 'Video' is written as it returning Videos
+  updateVideo(input:UpdateVideo!): Video!
+  removeVideo(input:DeleteVideo!): String!
+  uploadFile(file: Upload!): String!
+  
+}
