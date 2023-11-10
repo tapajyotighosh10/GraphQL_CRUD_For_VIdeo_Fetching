@@ -31,12 +31,10 @@ input UpdateVideo {
 input DeleteVideo {
   id: Int!
 }
-scalar Upload
+
 
 type Mutation {
   createVideo(input: NewVideo!): Video!   # In last 'Video' is written as it returning Videos
   updateVideo(input:UpdateVideo!): Video!
-  removeVideo(input:DeleteVideo!): String!
-  uploadFile(file: Upload!): String!
-  
+  removeVideo(input:DeleteVideo!): String! 
 }

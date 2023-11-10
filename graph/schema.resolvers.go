@@ -7,16 +7,8 @@ package graph
 import (
 	"context"
 	"fmt"
-	"io"
-	//"log"
-	"math/rand"
-	"os"
-	"path/filepath"
-	"time"
 	postgres "videoApi/graph/connection"
 	"videoApi/graph/model"
-
-	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateVideo is the resolver for the createVideo field.
@@ -32,8 +24,8 @@ func (r *mutationResolver) CreateVideo(ctx context.Context, input model.NewVideo
 
 	err := conn.Create(&res).Error
 
-	if err!=nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 
 	fmt.Println("data inserted successfully")
@@ -60,7 +52,7 @@ func (r *mutationResolver) UpdateVideo(ctx context.Context, input model.UpdateVi
 	if input.URL != "" {
 		vid.URL = input.URL
 	}
-	
+
 	if input.Author != nil {
 		vid.Author = *input.Author
 	}
@@ -87,50 +79,6 @@ func (r *mutationResolver) RemoveVideo(ctx context.Context, input model.DeleteVi
 	}
 
 	return "data deleted", nil
-}
-
-// UploadFile is the resolver for the uploadFile field.
-
-func (r *mutationResolver) UploadFile(ctx context.Context, file graphql.Upload) (string, error) {
-	// Ensure the file is closed after the function returns.
-	//defer file.File.Close()
-	// You can access the uploaded file using file.File.
-	uploadedFile := file.File
-
-	// Extract the original filename from the uploaded file.
-	// You can customize this to generate a unique name.
-	originalFilename := file.Filename
-
-	// Remove any potentially unsafe characters from the filename to prevent directory traversal.
-	sanitizedFilename := filepath.Base(originalFilename)
-
-	// Specify the directory where you want to save the uploaded files (e.g., "uploads").
-	uploadDir := "./Documents"
-
-	// Ensure the upload directory exists, create it if not.
-	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
-		return "", err
-	}
-
-	// Generate a unique filename by appending a timestamp and a random number to the sanitized filename.
-	timestamp := time.Now().Format("20060102150405")
-	uniqueFileName := fmt.Sprintf("%s_%s_%d", sanitizedFilename, timestamp, rand.Intn(10000))
-
-	// Create a file on the server to save the uploaded content.
-	filePath := filepath.Join(uploadDir, uniqueFileName)
-	newFile, err := os.Create(filePath)
-	if err != nil {
-		return "", err
-	}
-	defer newFile.Close()
-
-	// Copy the content of the uploaded file to the new file.
-	_, err = io.Copy(newFile, uploadedFile)
-	if err != nil {
-		return "", err
-	}
-
-	return "File uploaded successfully", nil
 }
 
 // Videos is the resolver for the videos field.
