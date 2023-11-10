@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
+	//"log"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -30,12 +30,11 @@ func (r *mutationResolver) CreateVideo(ctx context.Context, input model.NewVideo
 		Author: input.Author,
 	}
 
-	// log.Println("kmmmmmmmm88888888888888mmmmmmmmmmmm") // debugging
-	//db, _ := sql.Open("postgres", conn)
+	err := conn.Create(&res).Error
 
-	err := conn.Create(&res)
-
-	log.Println(err)
+	if err!=nil{
+		return nil,err
+	}
 
 	fmt.Println("data inserted successfully")
 
@@ -57,9 +56,11 @@ func (r *mutationResolver) UpdateVideo(ctx context.Context, input model.UpdateVi
 	if input.Name != "" {
 		vid.Name = input.Name
 	}
+
 	if input.URL != "" {
 		vid.URL = input.URL
 	}
+	
 	if input.Author != nil {
 		vid.Author = *input.Author
 	}
